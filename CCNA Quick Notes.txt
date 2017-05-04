@@ -1,0 +1,272 @@
+Author: Swapnasheel
+
+Title:- This is CCNA level general configuration CLI and Basic concepts
+
+
+
+----------------------------------------------------------------
+
+BASICs:-
+
+
+Collision Domain and Broadcast Domain
+
+Hub        --->    1 collision and 1 broadcast domain
+Switch     --->    Multiple collision and 1 boadcast domains
+Router     --->    Multiple collision and multiple boadcast domains
+
+The Flow:-
+
+Segments   --->  Packets  ---->   Frames   ---->   Bits
+
+
+IPv4:-
+
+Public:-
+Class A :- 0.0.0.0              126.255.255.255
+Class B :- 128.0.0.0		191.255.255.255	
+Class C :- 192.0.0.0		223.255.255.255	
+Class D :- 224.0.0.0		239.255.255.255	
+Class E :- 240.0.0.0		255.255.255.255	
+
+
+Private:-
+Class A :- 10.0.0.0		10.255.255.255	
+Class B :- 172.16.0.0		172.31.255.255	
+Class C :- 192.168.0.0		192.168.255.255	
+
+
+VLSM (Variable length subnet mask) === CIDR  == Classless
+
+
+3 Modes of Cisco routers
+- user mode
+- Priviledge mode / Enable mode
+- Configuration mode
+
+
+
+	
+---------------------------------------------------------------------------
+
+>>>>>>>>>>>>>Configuring Telnet<<<<<<<<<<<<<
+
+en
+conf t
+line vty 0 5
+password <your password>
+
+
+>>>>>>>>>>>>>Configuring SSH<<<<<<<<<<<<<<<<
+
+en 
+conf t
+ip domain_name <say cisco.com>
+username <usrname> password <psswd>
+crypto key generate rsa 
+1024
+line vty 0 4
+login local
+
+To access/ SSH into another system (SSH configured system)
+ssh -l <username> <remote IP address> 
+password:
+
+
+>>>>>>>>>>>>>Configuring Default route<<<<<<<<<<<<<
+
+en
+conf t
+ip route 0.0.0.0 0.0.0.0 <Next hop IP address>
+
+
+>>>>>>>>>>>>>Configuring Static route<<<<<<<<<<<<<
+
+en 
+conf t
+ip route <destination Network ID> <Destination subnet> <Next hop address>
+
+
+>>>>>>>>>>>>>Configuring an Interface<<<<<<<<<<<<<<<
+
+en
+conf t
+
+int fa 0/0
+ip add 192.168.0.10 255.255.255.0
+no shut
+
+
+-------------------------------Routing Protocols ---------------------------------
+
+1. RIP (Routing information based)
+>> DVRP= Distance vector routing protocol
+>> Metric: Hop Count
+		0 - 15
+		16 = unreachable
+>> Administrative distance = 120 (default)
+>> Bellman- Foed Algorithm
+>> Timers:
+	Update: 30 sec
+	Holddown/ Invalid: 180 sec
+	Flash : 240 sec
+
+RIPv1 
+	- Supports Classful 
+	- Broadcast IP 255.255.255.255
+	- Doesn't support VLSM
+
+RIPv2 
+	- Supports Classless
+	- Broadcast IP 224.0.0.9
+	- Supports VLSM
+
+>>>>>>>>>>>>>>>>>>>>>Configuring RIP<<<<<<<<<<<<<<<<<<<<<<<<
+
+en
+conf t
+router rip
+version 2
+network <connected Netwrk IP>
+
+!!!additional
+
+no auto summary
+timers basic <update> <invalid> <holddown> <Flush>
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+%%%%%%%%%%%%%% Verification of configuration %%%%%%%%%%%%%%%%
+sh ip route
+sh ip protocols
+debug ip rip
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Configuring DNS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+en
+conf t
+ip host <hostname> < ip address > < ip address >
+
+example:- I want to name Router 1 as R1 and associate 2 IP's (for 2 interfaces) with it
+
+ip host R1 1.1.1.1 192.168.1.1
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+%%%%%%%%%%%%%%%%% Remove DNS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+no ip-domain-lookup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+----------------------------------------
+2. EIGRP (Enhanced interior gateway routing protocol)
+
+Metric: Hop count + Cost
+
+K1 : Bandwidth (1)
+K2 : Load
+K3 : Delay     (1) 
+K4 : Reliability
+K5 : MTU
+
+
+A. Neighbour table:
+	Conditions must match:
+		K values
+		AS number
+		Hello packets
+
+B. Topology table
+	- Calculates Feasible distance a.k.a shortest path
+
+	Update:-
+		Hello Packets
+		Query (30 sec) 
+		Reply
+		Ack	
+
+AD value - 90
+
+>>>>>>>>>>>>>Configuring EIGRP<<<<<<<<<<<<<<<<<<<<<<<<<
+en
+conf t
+router eigrp <AS Number>
+network <connected network IP>
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+3. OSPF (Open Shortest Path First)
+
+> Metric - Cost
+> Works in Areas
+> Suitable for large area network
+
+> Administrative distance - 110
+
+
+Election Process---
+
+1. Find the DR (Designated router)
+	- Choosen by "Highest Priority"
+	- Highest IP address (can also be loopback IP address)
+
+Everything goes through the Area 0 of the topology
+
+2. BDR (Backup designated router)
+	- Similar process of election 
+	- When DR fails, BDR becomes the DR
+
+
+>>> Wildcard mask
+
+Broadcast mask 	         255.255.255.255
+Subnet mask (eg /24)   - 255.255.255.0
+			-----------------
+			   0.0.0.255  <-------- Wildcard Mask for /24 n/w
+
+
+>>>>>>>>>>>>>Configuring EIGRP<<<<<<<<<<<<<<<<<<<<<<<<<
+en
+conf t
+router ospf <process ID>
+network 192.168.0.0 0.0.0.255 area 0
+no auto-summarization
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cisco CLI trick commands<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+IN RUNNING CONFIGURATION
+
+sh run linenum   ----------> this shows the running configuration and specifies the line number for each
+sh run linenum | include <line no>  ----------> this only shows the line number u specified
+
+sh run linenum | begin 153 -------> show configuration begining frm line no 153
+sh run linenum | beg 153 (same as above)
+
+sh run brief -----------------> doesn't show the certificate or somethng that takes space
+
+sh run | include ^i ----------> shows somethng that starts with I
+
+sh run | section ospf -----------> only ospf configuration
+
+------------------------------------------------------------
+
