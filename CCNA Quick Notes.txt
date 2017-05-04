@@ -240,6 +240,105 @@ no auto-summarization
 
 
 
+------------------------------------------------------------SWITCHING--------------------------------------------------------------------------
+
+
+MAC address   --------  48 bit Hexadecimal no.
+
+Switches work in 3 stages:-
+	1) Learning
+		- Learns from source addressing
+	
+	2) Flooding 
+		- Similar to broadcasting, broadcasts from one source to many, except to the source
+	
+	3) Forwarding
+		- Updated table then forwards the packets to the destination
+
+
+			MAC ADD TABLE
+
+Port Number						MAC add
+  Fa 0/0						  A
+  Fa 1/0						  B
+  Fa 2/0						  C
+  Fa 3/0 	 					  D
+
+
+
+
+
+Spanning tree protocol
+
+	- BPDU (Bridge protocol data unit)
+		- updates and share data packets every 2 sec
+
+	- It contains
+		- Bridge ID
+			- Priority (default is 32768 i.e 2 ^ 15)
+			- MAC address
+
+Election similar to OSPF will be done to obtain Root Bridge.
+This root bridge is selected based on 
+		- Lowest bridge ID
+		- Lowest MAC add
+
+
+All the interfaces for the Bridge root are not blocked and are known as the designated ports.
+
+Convergence:-
+
+1. Blocking State :- By default all ports are in blocked state and RED 
+2. Listening state :- Listen for BPDU
+3. Learning state :- Learn path
+4. Forwarding state
+
+
+
+>>>>>>>>>Configuring STP>>>>>>>>>>>>>>>>
+
+en
+sh spanning-tree
+
+Changing a root bridge:-
+	- Root can be changed by chaning its priority
+
+en
+conf t
+spanning-tree vlan1 priority 4096
+spanning-tree vlan1 root primary/ secondary
+
+
+Link aggregation
+PAGP (Cisco propritory)
+LACP (Open)
+
+
+			LACP
+
+		Active		Passive
+		  A ------------- A
+		  A ------------- P
+		  P ------x------ P
+
+
+			PAGP
+
+		Disarable	 Auto
+		  D ------------- D
+		  D ------------- A
+		  A ------x------ A
+
+
+>>>>>>>>>>>>>>>>>>Configuring PAGP and LACP>>>>>>>>>>>>>>>>>>>>
+
+
+en
+conf t
+int fa 0/0
+channel-group <grp no> mode <Active/ inactive>
+switch mode trunk
+no shut
 
 
 
@@ -248,6 +347,19 @@ no auto-summarization
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 
