@@ -1,0 +1,51 @@
+/*/*//*/*/*//*//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
+
+		This is all about MQTT
+
+*/*/*/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/**/*/
+
+
+MQTT
+
+- uses a publish/ subscribe architecture in contrast to HTTP with its request/ response paradigm
+- Pub/Sub is an event driven and enables msgs to be pushed to clients
+- MQTT broker is a central communication point 
+- Broker is responsible in sending/ dispatching all msgs between the senders and the rightful receivers
+- Each client that publishes a message to broker, includes a topic into the message
+- THE TOPIC IS THE ROUTING INFORMATION FOR THE BROKER
+- Clients that want to receive msgs subcribe to a topic and broker delivers it to them
+- Thus clients don't have to know each other, they communicate only over the topic
+- This architecture is highly scalable without dependencies between the data producers and the data consumers
+
+
+Difference to HTTP is, client doesn't have to pull the information it needs, rather the broker pushes the information to the clients 
+Central concept in MQTT to dispatch messages are topics
+A topic is a simple string that can have more hierarchy levels, which are separated by a slash.
+The subscription to house/+/temperature would result in all message send to the previously mention topic house/living-room/temperature as well as any topic with an arbitrary value in the place of living room, for example house/kitchen/temperature
+
+
+Wildcards
+
+The plus sign is a single level wild card and only allows arbitrary values for one hierarchy.
+If you need to subscribe to more than one level, for example to the entire subtree, there is also a multilevel wildcard (#)
+
+
+QOS
+
+Level 0 - Doesn't have guarantee at all - FIRE AND FORGET
+Level 1 - Message will atleast arrive once
+Level 2 - Message will arrive at the destination exctly once
+
+
+NO CLIENT IS CONNECTED TO EACH OTHER DIRECTLY, but only via the broker
+
+
+
+
+
+
+
+
+
+
+
