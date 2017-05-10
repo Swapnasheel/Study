@@ -227,7 +227,7 @@ Subnet mask (eg /24)   - 255.255.255.0
 			   0.0.0.255  <-------- Wildcard Mask for /24 n/w
 
 
->>>>>>>>>>>>>Configuring EIGRP<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>>>>Configuring OSPF<<<<<<<<<<<<<<<<<<<<<<<<<
 en
 conf t
 router ospf <process ID>
