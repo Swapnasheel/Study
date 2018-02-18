@@ -24,8 +24,9 @@ class LinkedList(object):
 			newNode.nextNode = self.head
 			self.head = newNode
 
-	def size(self):
+	def sizeOfList(self):
 		return self.size
+		#print('Size of LinkedList is %s' %(self.size))
 
 
 	def remove(self, data):
@@ -63,7 +64,7 @@ class LinkedList(object):
 
 	def insertEnd(self, data):
 
-		self.size - self.size + 1
+		self.size = self.size + 1
 		newNode = Node(data)
 		actualNode = self.head
 
@@ -79,6 +80,22 @@ class LinkedList(object):
 		while actualNode.nextNode is not None:
 			print("%d " % actualNode.data)
 			actualNode = actualNode.nextNode
+
+
+# Testing
+
+linkedlist = LinkedList()
+
+linkedlist.insertStart(10)
+linkedlist.insertStart(20)
+linkedlist.insertStart(30)
+linkedlist.insertEnd(40)
+
+linkedlist.traverselist()
+print(linkedlist.sizeOfList())
+
+
+
 
 
 
