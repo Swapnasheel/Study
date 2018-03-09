@@ -14,6 +14,38 @@ Can add:
 import random
 import sys
 
+
+
+def convert_to_binary(octet):
+
+    return_octet = []
+
+    for octet_index in range(0, len(octet)):
+
+        binary_octet = bin(int(octet[octet_index])).split("b")[1]
+
+        if len(binary_octet) < 8:
+            binary_octet_padded = binary_octet.zfill(8)
+            return_octet.append(binary_octet_padded)
+        else:
+            return_octet.append(binary_octet)
+
+    return return_octet
+
+
+
+def convert_to_decimal(whole_octet):
+
+    return_octet = []
+
+    for each_octet in whole_octet:
+        return_octet.append(str(int(each_octet, 2)))
+
+    return return_octet
+
+
+
+
 def Main():
 
     try:
@@ -58,7 +90,7 @@ def Main():
         mask_octet_decimal = subnet_mask
 
         #print mask_octet_decimal
-
+        ''' 
         for octet_index in range(0, len(mask_octet_decimal)):
 
             #print bin(int(mask_octet_decimal[octet_index]))
@@ -73,9 +105,12 @@ def Main():
             elif len(binary_octet) < 8:
                 binary_octet_padded = binary_octet.zfill(8)
                 mask_octet_padded.append(binary_octet_padded)
+        '''
+        
+        mask_octet_padded = convert_to_binary(mask_octet_decimal)
 
         decimal_mask = "".join(mask_octet_padded)
-        print decimal_mask  # this should print something like 255.255.255.0 -> 11111111111111111111111100000000
+        #print decimal_mask  # this should print something like 255.255.255.0 -> 11111111111111111111111100000000
 
         # Lets count the number of 0's and 1's in the decimal mask
 
@@ -90,6 +125,68 @@ def Main():
         #print number_of_hosts
 
         ## Calculate the wildcard mask
+
+        wildcard_octets = []
+
+        for wildcard in mask_octet_decimal:
+            data = 255 - int(wildcard)
+            wildcard_octets.append(str(data))
+
+        wildcard_mask = ".".join(wildcard_octets)
+        #print wildcard_mask
+
+        ## Convert the IP to binary
+
+        ip_octet_decimal = ip_add
+        ip_octet_padded = convert_to_binary(ip_octet_decimal)
+        binary_ip_add = "".join(ip_octet_padded)
+        #print binary_ip_add
+
+        ## Now lets get the network IP address and the broadcast IP address from the binary IP address
+
+        network_ip_add_binary = binary_ip_add[:(number_of_ones)] + "0" * number_of_zero
+        #print network_ip_add_binary
+
+        broadcast_ip_add_binary = binary_ip_add[:(number_of_ones)] + "1" * number_of_zero
+        #print broadcast_ip_add_binary
+
+        # Get the network IP
+        
+        net_ip_octet = []
+        for octet in range(0, len(network_ip_add_binary), 8):
+            net_ip_oct = network_ip_add_binary[octet: octet+8]
+            net_ip_octet.append(net_ip_oct)
+
+        #print net_ip_octet
+        # Get network IP
+        
+        network_ip = convert_to_decimal(net_ip_octet)
+        network_address = ".".join(network_ip)
+        #print network_address
+        
+        bdct_ip_octet = []
+        for octet in range(0, len(broadcast_ip_add_binary), 8):
+            bdct_ip_oct = broadcast_ip_add_binary[octet: octet+8]
+            bdct_ip_octet.append(bdct_ip_oct)
+ 
+        broadcast_ip = convert_to_decimal(bdct_ip_octet)
+        broadcast_address = '.'.join(broadcast_ip)
+        #print broadcast_address
+
+
+        ## Resukts so far!!
+
+        print "\n"
+        print "Network address is %s " %network_address
+        print "broadcast address is %s " %broadcast_address
+        print "Number of valid hosts in the network are %s " %number_of_hosts
+        print "Wildcard mask is %s " %wildcard_mask
+        print "\n"
+
+
+
+
+
 
 
 
